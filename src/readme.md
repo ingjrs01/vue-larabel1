@@ -31,3 +31,9 @@ npm run watch
 
 Este comando se queda escuchando los cambios, y va generando los 
 
+
+## Revisar como funcionan los seeders
+
+php artisan make seeder
+
+
