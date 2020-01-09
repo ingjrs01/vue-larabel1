@@ -4,10 +4,10 @@
 
         <div class="card-body">
  
-            <form action="">
+            <form action="" v-on:submit.prevent="newThought()">
                 <div class="form-group">
                     <label for="thought">Ahora estoy pensando en: </label>
-                    <input type="text" class="form-control" name="thought">
+                    <input type="text" class="form-control" name="thought" v-model="description">
                 </div>
                 <button type="submit" class="btn btn-primary">
                     Enviar pensamiento
@@ -19,8 +19,25 @@
 
 <script>
     export default {
+        data() {
+            return {
+                description: ''
+            }
+        },
         mounted() {
             console.log('Component mounted.')
+        },
+        methods: {
+            newThought() {
+                let thought = {
+                    id: 2,
+                    description: this.description,
+                    created_at: '11/22/2020'
+                };
+                this.$emit('new',thought);
+                console.log(this.description);
+                this.description = ''; 
+            }
         }
     }
 </script>

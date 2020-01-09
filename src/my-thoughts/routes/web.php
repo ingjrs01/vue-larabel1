@@ -19,6 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/pruebas',function(){
-    return "que te den";
-});
+Route::apiResource('thoughts','ThoughtController');

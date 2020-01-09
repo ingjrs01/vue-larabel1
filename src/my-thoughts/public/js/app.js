@@ -1952,8 +1952,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      description: ''
+    };
+  },
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  methods: {
+    newThought: function newThought() {
+      var thought = {
+        id: 2,
+        description: this.description,
+        created_at: '11/22/2020'
+      };
+      this.$emit('new', thought);
+      console.log(this.description);
+      this.description = '';
+    }
   }
 });
 
@@ -1978,9 +1995,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      thoughts: [{
+        'id': 1,
+        'description': 'abc',
+        'created_at': '08/01/2020'
+      }]
+    };
+  },
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  methods: {
+    addThought: function addThought(thought) {
+      this.thoughts.push(thought);
+    },
+    deleteThought: function deleteThought(index) {
+      this.thoughts.splice(index, 1);
+    },
+    updateThought: function updateThought(index, thought) {
+      this.thoughts[index] = thought;
+    }
   }
 });
 
@@ -2014,9 +2057,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['thought'],
+  data: function data() {
+    return {
+      editMode: false
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    console.log('Component mounted');
+  },
+  methods: {
+    clickDelete: function clickDelete() {
+      this.$emit('delete');
+    },
+    clickEdit: function clickEdit() {
+      this.editMode = true; //this.$emit('edit');
+    },
+    clickSave: function clickSave() {
+      this.editMode = false;
+      this.$emit('update', thought);
+    }
   }
 });
 
@@ -37392,28 +37457,49 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-header" }, [
-        _vm._v("En que estas pensando ahora")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _c("form", { attrs: { action: "" } }, [
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "card-header" }, [
+      _vm._v("En que estas pensando ahora")
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _c(
+        "form",
+        {
+          attrs: { action: "" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.newThought()
+            }
+          }
+        },
+        [
           _c("div", { staticClass: "form-group" }, [
             _c("label", { attrs: { for: "thought" } }, [
               _vm._v("Ahora estoy pensando en: ")
             ]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.description,
+                  expression: "description"
+                }
+              ],
               staticClass: "form-control",
-              attrs: { type: "text", name: "thought" }
+              attrs: { type: "text", name: "thought" },
+              domProps: { value: _vm.description },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.description = $event.target.value
+                }
+              }
             })
           ]),
           _vm._v(" "),
@@ -37422,11 +37508,12 @@ var staticRenderFns = [
             { staticClass: "btn btn-primary", attrs: { type: "submit" } },
             [_vm._v("\n                Enviar pensamiento\n            ")]
           )
-        ])
-      ])
+        ]
+      )
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -37453,13 +37540,32 @@ var render = function() {
       "div",
       { staticClass: "col-md-8" },
       [
-        _c("form-component"),
+        _c("form-component", { on: { new: _vm.addThought } }),
         _vm._v(" "),
         _c("br"),
         _vm._v(" "),
-        _c("thought-component")
+        _vm._l(_vm.thoughts, function(thought, index) {
+          return _c("thought-component", {
+            key: thought.id,
+            attrs: { thought: thought },
+            on: {
+              delete: function($event) {
+                return _vm.deleteThought(index)
+              },
+              update: function($event) {
+                var i = arguments.length,
+                  argsArray = Array(i)
+                while (i--) argsArray[i] = arguments[i]
+                return _vm.updateThought.apply(
+                  void 0,
+                  [index].concat(argsArray)
+                )
+              }
+            }
+          })
+        })
       ],
-      1
+      2
     )
   ])
 }
@@ -37485,38 +37591,80 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "card-header" }, [
-        _vm._v("Publicado en 09/01/2020")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-body" }, [
-        _c("p", [
-          _vm._v(
-            "Loorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil consectetur iste molestias! Nemo consectetur asperiores ratione eius tenetur obcaecati atque nam, dolores expedita quo quam cupiditate, fuga vero sit possimus."
+  return _c("div", { staticClass: "card" }, [
+    _c("div", { staticClass: "card-header" }, [
+      _vm._v("Publicado en " + _vm._s(_vm.thought.created_at))
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card-body" }, [
+      _vm.editMode
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.thought.description,
+                expression: "thought.description"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "text" },
+            domProps: { value: _vm.thought.description },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.thought, "description", $event.target.value)
+              }
+            }
+          })
+        : _c("p", [_vm._v(_vm._s(_vm.thought.description))])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "panel-footer" }, [
+      _vm.editMode
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              on: {
+                click: function($event) {
+                  return _vm.clickSave()
+                }
+              }
+            },
+            [_vm._v("\n            Guardar\n        ")]
           )
-        ])
-      ]),
+        : _c(
+            "button",
+            {
+              staticClass: "btn btn-default",
+              on: {
+                click: function($event) {
+                  return _vm.clickEdit()
+                }
+              }
+            },
+            [_vm._v("\n            Editar\n        ")]
+          ),
       _vm._v(" "),
-      _c("div", { staticClass: "panel-footer" }, [
-        _c("button", { staticClass: "btn btn-default" }, [
-          _vm._v("\n            Editar\n        ")
-        ]),
-        _vm._v(" "),
-        _c("button", { staticClass: "btn btn-danger" }, [
-          _vm._v("\n            Eliminar\n        ")
-        ])
-      ])
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          on: {
+            click: function($event) {
+              return _vm.clickDelete()
+            }
+          }
+        },
+        [_vm._v("\n            Eliminar\n        ")]
+      )
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
