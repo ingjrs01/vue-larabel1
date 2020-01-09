@@ -1,6 +1,6 @@
 <template>
     <div class="card">
-        <div class="card-header">Publicado en {{ thought.created_at }}</div>
+        <div class="card-header">Publicado en {{ thought.created_at }} - Última actualización {{ thought.updated_at}}</div>
 
         <div class="card-body">
             <input v-if="editMode" type="text" class="form-control" v-model="thought.description">
@@ -34,7 +34,10 @@
         },
         methods: {
            clickDelete: function() {
-                this.$emit('delete');
+               axios.delete(`/thoughts/${this.thought.id}`).then(()=>{
+                   this.$emit('delete');
+               });
+                
             },
 
             clickEdit() {
@@ -42,8 +45,14 @@
                 //this.$emit('edit');
             },
             clickSave() {
-                this.editMode = false;
-                this.$emit('update',thought);
+                const params = {
+                    description: this.thought.description
+                }
+                axios.put(`/thoughts/${this.thought.id}`,params).then((response)=>{
+                    this.editMode = false;
+                    const thought = response.data;
+                    this.$emit('update',thought);
+                });                                
             }
         }
     }

@@ -29,13 +29,13 @@
         },
         methods: {
             newThought() {
-                let thought = {
-                    id: 2,
-                    description: this.description,
-                    created_at: '11/22/2020'
+                const params = {
+                    description: this.description
                 };
-                this.$emit('new',thought);
-                console.log(this.description);
+                axios.post('/thoughts',params).then((response)=>{
+                    const thought = response.data;
+                    this.$emit('new',thought);
+                });
                 this.description = ''; 
             }
         }

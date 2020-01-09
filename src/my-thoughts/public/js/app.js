@@ -1962,13 +1962,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     newThought: function newThought() {
-      var thought = {
-        id: 2,
-        description: this.description,
-        created_at: '11/22/2020'
+      var _this = this;
+
+      var params = {
+        description: this.description
       };
-      this.$emit('new', thought);
-      console.log(this.description);
+      axios.post('/thoughts', params).then(function (response) {
+        var thought = response.data;
+
+        _this.$emit('new', thought);
+      });
       this.description = '';
     }
   }
@@ -2004,15 +2007,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      thoughts: [{
-        'id': 1,
-        'description': 'abc',
-        'created_at': '08/01/2020'
-      }]
+      thoughts: []
     };
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    var _this = this;
+
+    axios.get('/thoughts').then(function (response) {
+      _this.thoughts = response.data;
+    });
   },
   methods: {
     addThought: function addThought(thought) {
@@ -2073,14 +2076,27 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     clickDelete: function clickDelete() {
-      this.$emit('delete');
+      var _this = this;
+
+      axios["delete"]("/thoughts/".concat(this.thought.id)).then(function () {
+        _this.$emit('delete');
+      });
     },
     clickEdit: function clickEdit() {
       this.editMode = true; //this.$emit('edit');
     },
     clickSave: function clickSave() {
-      this.editMode = false;
-      this.$emit('update', thought);
+      var _this2 = this;
+
+      var params = {
+        description: this.thought.description
+      };
+      axios.put("/thoughts/".concat(this.thought.id), params).then(function (response) {
+        _this2.editMode = false;
+        var thought = response.data;
+
+        _this2.$emit('update', thought);
+      });
     }
   }
 });
@@ -37593,7 +37609,12 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card" }, [
     _c("div", { staticClass: "card-header" }, [
-      _vm._v("Publicado en " + _vm._s(_vm.thought.created_at))
+      _vm._v(
+        "Publicado en " +
+          _vm._s(_vm.thought.created_at) +
+          " - Última actualización " +
+          _vm._s(_vm.thought.updated_at)
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "card-body" }, [

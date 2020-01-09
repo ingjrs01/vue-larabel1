@@ -25,14 +25,18 @@ class ThoughtController extends Controller
         $thought->description = $request->description;
         $thought->user_id = auth()->id();
         $thought->save();
+
+        return $thought;
     }
 
 
-    public function update(Rquest $request, $id)
+    public function update(Request $request, $id)
     {
         $thought = Thought::find($id);
         $thought->description = $request->description;
         $thought->save();
+
+        return $thought;
     }
 
     public function destroy($id)
